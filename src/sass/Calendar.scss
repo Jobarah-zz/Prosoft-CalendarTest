@@ -1,0 +1,37 @@
+.calendar {
+	width: 25rem;
+	height: 25rem;
+}
+.week {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+    margin: .1rem;
+}
+.day {
+	height: 4rem;
+	width: 14%;
+	line-height: 4rem;
+	text-align: center;
+	font-size: 1rem;
+}
+.active {
+	background-color: #87D37C;
+}
+.inactive {
+	background-color: #BDC3C7;
+	color: transparent;
+}
+.weekend {
+	background-color: #E9D460;
+}
+.holiday {
+	background-color: #F27935;
+}
+.header {
+	background-color: #C8F7C5;
+	text-align: center;
+	font-size: 1rem;
+}
