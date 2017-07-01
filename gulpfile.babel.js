@@ -23,7 +23,6 @@ const internals = {
     isWatchify: false,
     deps: []
 };
-
 internals.static = __dirname;
 internals.src = internals.static + '/src';
 
@@ -71,7 +70,6 @@ const createBundle = (options, callback) => {
     const rebundle = () => {
 
         return b.bundle()
-            // log errors if they happen
             .on('error', (e) => {
                 console.log(e);
                 gulp.src('').pipe(notify({
@@ -136,6 +134,7 @@ gulp.task('scripts', (callback) => {
     return callback();
 });
 
+
 gulp.task('connect', () => {
     
     connect.server({
@@ -152,6 +151,7 @@ gulp.on('task_stop', (e) => {
         message: "after " + time
     }));
 });
+
 
 gulp.task('watch', () => {
 
