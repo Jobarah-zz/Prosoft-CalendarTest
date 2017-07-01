@@ -47,6 +47,59 @@ gulp.task('sass', () => {
         .pipe(connect.reload());
 });
 
+const createBundle = (options, callback) => {
+
+    options = Object.assign({ min: true }, options);
+    let min = true;
+    const opts = Object.assign({}, watchify.args, {
+        entries: options.entries,
+        debug: true
+    });
+
+    let b = browserify(opts);
+    b.transform(babelify.configure({
+        compact: false
+    }));
+
+    if (path.basename(options.entries) === 'app.js') {
+        min = false;
+        b.require(internals.deps)
+    } else {
+        b.external(internals.deps);
+    }
+
+    const rebundle = () => {
+
+        return b.bundle()
+            // log errors if they happen
+            .on('error', (e) => {
+                console.log(e);
+                gulp.src('').pipe(notify({
+                    title: "SYNTAX ERROR",
+                    message: e.filename
+                }));
+            })
+            .pipe(source(options.output))
+            .pipe(buffer())
+            .pipe(sourcemaps.init({ loadMaps: true }))
+            .pipe(sourcemaps.write('./maps'))
+            .pipe(gulp.dest(options.destination))
+            .pipe(connect.reload());
+    };
+
+    if (internals.isWatchify) {
+        b = watchify(b);
+        b.on('update', (id) => {
+
+            lint(callback, id);
+            rebundle();
+        });
+        b.on('log', gutil.log);
+    }
+
+    return rebundle();
+};
+
 const lint = (callback, src) => {
 
     return gulp
@@ -54,6 +107,34 @@ const lint = (callback, src) => {
         .pipe(eslint({ useEslintrc: true }))
         .pipe(eslint.format());
 };
+
+gulp.task('scripts', (callback) => {
+
+    const mainFiles = [`${internals.src}/js/app.js`];
+    glob(`${internals.src}/js/*.js`, (err, files) => {
+
+        if (err) {
+            done(err);
+        }
+
+        files = [...files, ...mainFiles];
+
+        const tasks = files.map(function (entry, index) {
+            entry = path.normalize(entry);
+            const origin = path.normalize(`${ internals.src }/js`);
+            const dest = path.normalize(`${ internals.static }/dist/js`);
+            const destMapping = entry.replace(origin, dest);
+            const destination = path.dirname(destMapping);
+
+            createBundle({
+                entries: entry,
+                output: path.basename(entry),
+                destination: destination
+            });
+        });
+    });
+    return callback();
+});
 
 gulp.task('connect', () => {
     
@@ -64,6 +145,13 @@ gulp.task('connect', () => {
   });
 });
 
+gulp.on('task_stop', (e) => {
+    let time = prettyTime(e.hrDuration);
+    gulp.src('').pipe(notify({
+        title: "Finished: "+ e.task.toUpperCase(),
+        message: "after " + time
+    }));
+});
 
 gulp.task('watch', () => {
 
@@ -71,4 +159,4 @@ gulp.task('watch', () => {
     gulp.watch(internals.src + '/sass/**/*.scss',['sass']);
 });
 
-gulp.task('default', ['sass', 'watch']);
+gulp.task('default', ['connect', 'sass', 'scripts', 'watch']);
