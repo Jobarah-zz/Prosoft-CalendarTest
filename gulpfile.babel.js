@@ -47,6 +47,22 @@ gulp.task('sass', () => {
         .pipe(connect.reload());
 });
 
+const lint = (callback, src) => {
+
+    return gulp
+        .src(src)
+        .pipe(eslint({ useEslintrc: true }))
+        .pipe(eslint.format());
+};
+
+gulp.task('connect', () => {
+    
+    connect.server({
+    port: 3000,
+    root: './',
+    livereload: true
+  });
+});
 
 
 gulp.task('watch', () => {
