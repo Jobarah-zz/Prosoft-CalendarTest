@@ -19,6 +19,19 @@ export default class CalendarRenderer extends Component {
 		this.handleChange =  this.handleChange.bind(this);
 	}
 
+	handleChange(event) {
+		const target = event.target;
+
+		if (target.className === 'cc') {
+			this.setState({ countryCode: target.value });
+		} else if (target.className === 'start-date') {
+			this.setState({ startDate: target.value });
+		}
+		else if (target.className === 'days') {
+			this.setState({ daysToSpan: target.value });
+		}
+  	}
+
 
 	render() {
 		return (
