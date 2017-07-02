@@ -13,7 +13,7 @@ export default class Calendar extends Component {
 			initialDate: moment(props.initialDate),
 			daysToSpan: props.daysToSpan,
 			endDate: moment(props.initialDate).add(props.daysToSpan, 'day'),
-			countryCode: 'US',
+			countryCode: props.countryCode,
 			month: moment(props.initialDate).format('MM'),
 			year: moment(props.initialDate).format('YYYY'),
 			weeks: ''

@@ -26470,7 +26470,7 @@ var Calendar = function (_Component) {
 			initialDate: (0, _moment2.default)(props.initialDate),
 			daysToSpan: props.daysToSpan,
 			endDate: (0, _moment2.default)(props.initialDate).add(props.daysToSpan, 'day'),
-			countryCode: 'US',
+			countryCode: props.countryCode,
 			month: (0, _moment2.default)(props.initialDate).format('MM'),
 			year: (0, _moment2.default)(props.initialDate).format('YYYY'),
 			weeks: ''
@@ -26740,7 +26740,7 @@ var _Calendar2 = _interopRequireDefault(_Calendar);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_reactDom2.default.render(_react2.default.createElement(_Calendar2.default, { initialDate: '2008-06-17', holidays: [] }), document.getElementById('app'));
+_reactDom2.default.render(_react2.default.createElement(_Calendar2.default, { initialDate: '2008-06-17', holidays: [], countryCode: 'US' }), document.getElementById('app'));
 
 },{"./Calendar":271,"react":270,"react-dom":117}]},{},[273])
 

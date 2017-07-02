@@ -9726,7 +9726,7 @@ var Calendar = function (_Component) {
 			initialDate: (0, _moment2.default)(props.initialDate),
 			daysToSpan: props.daysToSpan,
 			endDate: (0, _moment2.default)(props.initialDate).add(props.daysToSpan, 'day'),
-			countryCode: 'US',
+			countryCode: props.countryCode,
 			month: (0, _moment2.default)(props.initialDate).format('MM'),
 			year: (0, _moment2.default)(props.initialDate).format('YYYY'),
 			weeks: ''
