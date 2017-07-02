@@ -26635,7 +26635,153 @@ var Calendar = function (_Component) {
 
 exports.default = Calendar;
 
-},{"./Day":272,"babel-runtime/core-js/get-iterator":1,"babel-runtime/core-js/object/get-prototype-of":4,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"babel-runtime/helpers/inherits":10,"babel-runtime/helpers/possibleConstructorReturn":11,"moment":115,"react":270}],272:[function(require,module,exports){
+},{"./Day":273,"babel-runtime/core-js/get-iterator":1,"babel-runtime/core-js/object/get-prototype-of":4,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"babel-runtime/helpers/inherits":10,"babel-runtime/helpers/possibleConstructorReturn":11,"moment":115,"react":270}],272:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
+
+var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = require('babel-runtime/helpers/createClass');
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = require('babel-runtime/helpers/possibleConstructorReturn');
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = require('babel-runtime/helpers/inherits');
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _Calendar = require('./Calendar');
+
+var _Calendar2 = _interopRequireDefault(_Calendar);
+
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Component = _react2.default.Component,
+    PropTypes = _react2.default.PropTypes;
+
+var CalendarRenderer = function (_Component) {
+	(0, _inherits3.default)(CalendarRenderer, _Component);
+
+	function CalendarRenderer(props) {
+		(0, _classCallCheck3.default)(this, CalendarRenderer);
+
+		var _this = (0, _possibleConstructorReturn3.default)(this, (CalendarRenderer.__proto__ || (0, _getPrototypeOf2.default)(CalendarRenderer)).call(this, props));
+
+		_this.state = {
+			countryCode: 'US',
+			startDate: '2017-06-15',
+			daysToSpan: '60',
+			calendars: ''
+		};
+
+		_this.handleChange = _this.handleChange.bind(_this);
+		_this.renderCalendar = _this.renderCalendar.bind(_this);
+		return _this;
+	}
+
+	(0, _createClass3.default)(CalendarRenderer, [{
+		key: 'getMonthHolidays',
+		value: function getMonthHolidays() {
+			return fetch('https://holidayapi.com/v1/holidays?key=8782889c-7fc1-47bf-8d3f-eccd67972bd0&country=' + this.state.countryCode + '&year=' + this.state.year + '&month=' + this.state.month).then(function (response) {
+				return response.json().then(function (res) {
+					return res.holidays;
+				});
+			});
+		}
+	}, {
+		key: 'handleChange',
+		value: function handleChange(event) {
+			var target = event.target;
+
+			if (target.className === 'cc') {
+				this.setState({ countryCode: target.value });
+			} else if (target.className === 'start-date') {
+				this.setState({ startDate: target.value });
+			} else if (target.className === 'days') {
+				this.setState({ daysToSpan: target.value });
+			}
+		}
+	}, {
+		key: 'componentDidMount',
+		value: function componentDidMount() {
+			this.renderCalendar();
+		}
+	}, {
+		key: 'getCalendarsToGenerateCount',
+		value: function getCalendarsToGenerateCount(days) {
+			if (true) {}
+		}
+	}, {
+		key: 'renderCalendar',
+		value: function renderCalendar() {
+			var _state = this.state,
+			    countryCode = _state.countryCode,
+			    startDate = _state.startDate,
+			    daysToSpan = _state.daysToSpan;
+
+			var daysInCalendar = 31 - parseInt((0, _moment2.default)(startDate).format('DD'));
+			var calendarsCount = Math.ceil((parseInt(this.state.daysToSpan) - daysInCalendar) / 31);
+			var monthEnd = (0, _moment2.default)(startDate).endOf('month');
+
+			console.log(calendarsCount);
+
+			var calendars = new Array();
+			if (countryCode !== '' && startDate !== '' && daysToSpan !== '') {
+
+				calendars.push(_react2.default.createElement(_Calendar2.default, { initialDate: startDate, daysToSpan: daysToSpan, countryCode: countryCode, holidays: [] }));
+
+				var tmpStartDate = (0, _moment2.default)(monthEnd).add(1, 'day');
+				var remainingDays = parseInt(this.state.daysToSpan) - daysInCalendar;
+
+				for (var i = 0; i < calendarsCount; i++) {
+					calendars.push(_react2.default.createElement(_Calendar2.default, { initialDate: tmpStartDate, daysToSpan: daysToSpan, countryCode: countryCode, holidays: [] }));
+				}
+
+				this.setState({ calendars: calendars });
+			}
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			return _react2.default.createElement(
+				'div',
+				{ className: 'calendarRenderer' },
+				'Country Code:',
+				_react2.default.createElement('input', { type: 'text', className: 'cc', value: this.state.countryCode, onChange: this.handleChange }),
+				'Start Date:',
+				_react2.default.createElement('input', { type: 'text', className: 'start-date', value: this.state.startDate, onChange: this.handleChange }),
+				'Days to Span:',
+				_react2.default.createElement('input', { type: 'text', className: 'days', value: this.state.daysToSpan, onChange: this.handleChange }),
+				this.state.calendars
+			);
+		}
+	}]);
+	return CalendarRenderer;
+}(Component);
+
+exports.default = CalendarRenderer;
+
+},{"./Calendar":271,"babel-runtime/core-js/object/get-prototype-of":4,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"babel-runtime/helpers/inherits":10,"babel-runtime/helpers/possibleConstructorReturn":11,"moment":115,"react":270}],273:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26723,7 +26869,7 @@ var Day = function (_Component) {
 
 exports.default = Day;
 
-},{"babel-runtime/core-js/object/get-prototype-of":4,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"babel-runtime/helpers/inherits":10,"babel-runtime/helpers/possibleConstructorReturn":11,"react":270}],273:[function(require,module,exports){
+},{"babel-runtime/core-js/object/get-prototype-of":4,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"babel-runtime/helpers/inherits":10,"babel-runtime/helpers/possibleConstructorReturn":11,"react":270}],274:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -26734,15 +26880,19 @@ var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _Calendar = require('./Calendar');
+var _CalendarRenderer = require('./CalendarRenderer');
 
-var _Calendar2 = _interopRequireDefault(_Calendar);
+var _CalendarRenderer2 = _interopRequireDefault(_CalendarRenderer);
+
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_reactDom2.default.render(_react2.default.createElement(_Calendar2.default, { initialDate: '2008-06-17', holidays: [], countryCode: 'US' }), document.getElementById('app'));
+_reactDom2.default.render(_react2.default.createElement(_CalendarRenderer2.default, null), document.getElementById('app'));
 
-},{"./Calendar":271,"react":270,"react-dom":117}]},{},[273])
+},{"./CalendarRenderer":272,"moment":115,"react":270,"react-dom":117}]},{},[274])
 
 
 //# sourceMappingURL=maps/app.js.map
