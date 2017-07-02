@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Calendar from './Calendar';
 
 ReactDOM.render(
-	<div>test</div>
+	<Calendar initialDate={'2008-06-17'} holidays={[]}/>
 	, document.getElementById('app'));
