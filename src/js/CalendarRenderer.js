@@ -15,13 +15,21 @@ export default class CalendarRenderer extends Component {
 			daysToSpan: '60',
 			calendars: ''
 		};
+
+		this.handleChange =  this.handleChange.bind(this);
 	}
 
 
 	render() {
 		return (
 			<div className = { 'calendarRenderer' }>
-
+				Country Code:
+				<input type="text" className={'cc'}value={this.state.countryCode} onChange={this.handleChange} />
+				Start Date:
+				<input type="text" className={'start-date'} value={this.state.startDate} onChange={this.handleChange} />
+				Days to Span:
+				<input type="text" className={'days'}value={this.state.daysToSpan} onChange={this.handleChange} />
+				{ this.state.calendars }
 			</div>
 		)
 	}
