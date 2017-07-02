@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import CalendarRenderer from './CalendarRenderer';
+import moment from 'moment';
 
 ReactDOM.render(
-	<CalendarRenderer startDate={'2008-06-17'} holidays={[]} countryCode={'US'}/>
+	<CalendarRenderer/>
 	, document.getElementById('app'));

@@ -17,7 +17,7 @@ export default class CalendarRenderer extends Component {
 		};
 
 		this.handleChange =  this.handleChange.bind(this);
-		this.getMonthHolidays = this.getMonthHolidays.bind(this);
+		this.renderCalendar = this.renderCalendar.bind(this);
 	}
 
 	getMonthHolidays() {
@@ -40,6 +40,38 @@ export default class CalendarRenderer extends Component {
 		}
   	}
 
+  	componentDidMount() {
+  		this.renderCalendar();
+  	}
+
+  	getCalendarsToGenerateCount(days) {
+  		if (true) {}
+  	}
+
+  	renderCalendar() {
+
+  		const { countryCode, startDate, daysToSpan } = this.state;
+  		const daysInCalendar = (31 - parseInt(moment(startDate).format('DD')));
+  		const calendarsCount = Math.ceil(( parseInt(this.state.daysToSpan) - daysInCalendar )/31);
+  		const monthEnd = moment(startDate).endOf('month');
+
+  		console.log(calendarsCount);
+
+  		let calendars = new Array();
+  		if (countryCode !== '' && startDate !== '' && daysToSpan !== '') {
+
+  			calendars.push(<Calendar initialDate={startDate} daysToSpan={daysToSpan} countryCode={countryCode} holidays={[]}/>);
+
+  			let tmpStartDate = moment(monthEnd).add(1, 'day');
+  			let remainingDays = ( parseInt(this.state.daysToSpan) - daysInCalendar );
+
+  			for (let i = 0; i < calendarsCount; i++) {
+  				calendars.push(<Calendar initialDate={tmpStartDate} daysToSpan={daysToSpan} countryCode={countryCode} holidays={[]}/>);
+  			}
+
+  			this.setState({calendars});
+  		}
+  	}
 
 	render() {
 		return (
