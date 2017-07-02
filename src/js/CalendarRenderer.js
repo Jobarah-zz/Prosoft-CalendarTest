@@ -17,6 +17,14 @@ export default class CalendarRenderer extends Component {
 		};
 
 		this.handleChange =  this.handleChange.bind(this);
+		this.getMonthHolidays = this.getMonthHolidays.bind(this);
+	}
+
+	getMonthHolidays() {
+		return fetch(`https://holidayapi.com/v1/holidays?key=8782889c-7fc1-47bf-8d3f-eccd67972bd0&country=${this.state.countryCode}&year=${this.state.year}&month=${this.state.month}`)
+		.then(function(response) {
+		  return response.json().then(res => res.holidays);
+		});
 	}
 
 	handleChange(event) {
