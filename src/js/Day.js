@@ -17,6 +17,16 @@ export default class Day extends Component {
 		this.getClassName = this.getClassName.bind(this);
 	}
 
+	componentWillReceiveProps(props) {
+
+		if(JSON.stringify(this.props) !== JSON.stringify(props)) {
+
+			const { dayNumber, weekDay, isValid, isHoliday } = props;
+
+			this.setState({ dayNumber, weekDay, isValid, isHoliday });
+		}
+	}
+
 	getClassName() {
 		const { isValid, dayNumber, weekDay, isHoliday } = this.state;
 		const isWeekend = weekDay === 0 || weekDay === 6;
@@ -32,6 +42,7 @@ export default class Day extends Component {
 	render() {
 		
 		const className = `day ${this.getClassName()}`;
+		
 		return (
 			<div className = { className }>{ this.state.dayNumber }</div>
 		);

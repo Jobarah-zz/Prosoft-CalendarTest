@@ -16,7 +16,7 @@ export default class Calendar extends Component {
 			countryCode: props.countryCode,
 			month: moment(props.initialDate).format('MM'),
 			year: moment(props.initialDate).format('YYYY'),
-			weeks: ''
+			weeks: []
 		};
 
 		this.initCalendar = this.initCalendar.bind(this);
@@ -25,18 +25,16 @@ export default class Calendar extends Component {
 		this.generateWeeks = this.generateWeeks.bind(this);
 		this.generateWeek = this.generateWeek.bind(this);
 		this.generateEmptyWeek = this.generateEmptyWeek.bind(this);
+		this.isWeekNotEmpty = this.isWeekNotEmpty.bind(this);
 	}
 
 	componentWillReceiveProps(props) {
-		const { countryCode, initialDate, daysToSpan } = props;
 
-		let test = new Date(initialDate);
+		if(JSON.stringify(this.props) !== JSON.stringify(props)) {
+			
+			const { initialDate, daysToSpan, countryCode } = props;
 
-		if (countryCode !== '' && initialDate !== '' && daysToSpan !== '') {
-
-			if (!isNaN(test.getMonth())) {
-	       		this.setState({countryCode, initialDate: moment(initialDate), daysToSpan }, this.generateWeeks);
-	    	}
+			this.setState({initialDate: moment(initialDate), endDate: moment(props.initialDate).add(props.daysToSpan, 'day'), countryCode}, this.generateWeeks);
 		}
 	}
 
@@ -45,6 +43,7 @@ export default class Calendar extends Component {
 	}
 
 	isInRange(date) {
+
 		const isValid = moment(date).isBetween(moment(this.state.initialDate).subtract(1, 'day') , this.state.endDate);
 
 		if (isValid)
@@ -53,8 +52,10 @@ export default class Calendar extends Component {
 	}
 
 	isDateHoliday(holidays, date) {
+
 		if (holidays.length === 0)
 			return false;
+
 		for(const holiday of holidays) {
 
 			if (moment(holiday.date).isSame(date, 'day'))
@@ -65,28 +66,44 @@ export default class Calendar extends Component {
 	}
 
 	initCalendar() {
+
 		this.generateWeeks();
 	}
 
 	generateWeeks() {
-		const { daysCount, initialDate } = this.state;
-		const weeks = new Array();
+
+		const { daysToSpan, initialDate } = this.state;
+		const weeks = [];
 		let tmpDate = moment(initialDate);
 
-		console.log("generateWeeks", initialDate.toString())
-
-		for (let i = 0; i < 4; i++) {
+		for (let i = 0; i < 6; i++) {
 
 			const retValue = this.generateWeek(tmpDate, this.props.holidays);
-			weeks.push(<div className = { 'week' } key={i} >{retValue.week}</div>);
+
+			if (weeks.length < 4 || this.isWeekNotEmpty(retValue.week)) {
+				weeks.push(<div className = { 'week' } key={i} >{retValue.week}</div>);
+			}
+
 			tmpDate = moment(retValue.lastDate);
 		}
+
 		this.setState({weeks});
-		return weeks;
+	}
+
+	isWeekNotEmpty(week) {
+
+		for(let day of week) {
+
+			if (day.props.isValid)
+				return true;
+		}
+
+		return false;
 	}
 
 	generateEmptyWeek() {
-		const days = new Array();
+
+		const days = [];
 
 		for (let i = 0; i < 7; i++) {
 			days.push(<Day key={ i } dayNumber={ moment().format('DD') } isHoliday = { false } weekDay = { -1 } isValid = { false }/>);
@@ -96,13 +113,13 @@ export default class Calendar extends Component {
 	}
 
 	generateWeek(initialDate, holidays) {
-		const days = new Array();
+
+		const days = [];
 		let tmpDate = moment(initialDate);
 		let emptyWeek = this.generateEmptyWeek();
 		let lastDate = initialDate;
-
-		console.log("Week", initialDate.toString())
 		let index = initialDate.day();
+
 		for (let i = index; i < 7; i++) {
 			const isDateHoliday = this.isDateHoliday(holidays, tmpDate);
 			const isValid = this.isInRange(tmpDate);
